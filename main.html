@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split Bill Calculator</title>
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+</head>
+<body>
+    <div class="container">
+        <h2>Split Bill Calculator</h2>
+        <div id="people"></div>
+        <div class="button-group">
+            <button id="add-person" class="text-link">+ Add Person</button>
+            <button id="reset-all" class="text-link">Reset</button>
+        </div>
+        <h3>Other Costs</h3>
+        <div id="other-costs"></div>
+        <button id="add-cost" class="text-link">+ Add Cost</button>
+        <h3>Global Discount</h3>
+        <input type="number" id="global-discount" placeholder="Enter discount" value="0">
+        <select id="discount-type">
+            <option value="percentage">Percentage (%)</option>
+            <option value="fixed">Fixed Amount</option>
+        </select>
+        <button id="calculate">Calculate Total</button>
+        <h3>Total Amount: <span id="total-amount">0</span></h3>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

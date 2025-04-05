@@ -1,75 +1,136 @@
-document.getElementById('add-person').addEventListener('click', function() {
-    let newPerson = document.createElement('div');
-    newPerson.classList.add('person');
-    newPerson.innerHTML = `
-        <input type="text" placeholder="Person Name" class="person-name">
-        <div class="items"></div>
-        <button class="text-link add-item">+ Add Item</button>
-        <button class="remove-person">Remove Person</button>
-    `;
-    document.getElementById('people').appendChild(newPerson);
-});
+let items = [];
+let people = [];
 
-document.getElementById('people').addEventListener('click', function(event) {
-    if (event.target.classList.contains('add-item')) {
-        let itemsContainer = event.target.previousElementSibling;
-        let newItem = document.createElement('div');
-        newItem.classList.add('item');
-        newItem.innerHTML = `
-            <input type="text" placeholder="Item Name" class="item-name">
-            <input type="number" placeholder="Price" class="item-price">
-            <input type="number" placeholder="Qty" class="item-qty" value="1">
-            <button class="remove-item">X</button>
-        `;
-        itemsContainer.appendChild(newItem);
+function addItem() {
+  const name = document.getElementById("itemName").value;
+  const qty = parseInt(document.getElementById("itemQty").value);
+  const price = parseFloat(document.getElementById("itemPrice").value);
+
+  if (!name || !qty || !price) return;
+
+  items.push({ name, qty, price, sharedBy: [] });
+  document.getElementById("itemName").value = "";
+  document.getElementById("itemQty").value = 1;
+  document.getElementById("itemPrice").value = "";
+  renderItems();
+}
+
+function addPerson() {
+  const name = document.getElementById("personName").value.trim();
+  if (!name) return;
+  people.push(name);
+  document.getElementById("personName").value = "";
+  renderPeople();
+  renderItems();
+}
+
+function toggleShare(itemIndex, person) {
+  const shared = items[itemIndex].sharedBy;
+  const idx = shared.indexOf(person);
+  if (idx >= 0) shared.splice(idx, 1);
+  else shared.push(person);
+  renderItems();
+}
+
+function editItem(index) {
+  const item = items[index];
+  const newQty = prompt(`Ubah qty untuk ${item.name}:`, item.qty);
+  const newPrice = prompt(`Ubah harga untuk ${item.name}:`, item.price);
+  if (newQty !== null && newPrice !== null) {
+    const qty = parseInt(newQty);
+    const price = parseFloat(newPrice);
+    if (!isNaN(qty) && !isNaN(price)) {
+      items[index].qty = qty;
+      items[index].price = price;
+      renderItems();
     }
-    if (event.target.classList.contains('remove-item')) {
-        event.target.parentElement.remove();
-    }
-    if (event.target.classList.contains('remove-person')) {
-        event.target.parentElement.remove();
-    }
-});
+  }
+}
 
-document.getElementById('add-cost').addEventListener('click', function() {
-    let newCost = document.createElement('div');
-    newCost.classList.add('cost-item');
-    newCost.innerHTML = `
-        <input type="text" placeholder="Cost Description" class="cost-description">
-        <input type="number" placeholder="Amount" class="cost-amount">
-        <button class="remove-cost">X</button>
-    `;
-    document.getElementById('other-costs').appendChild(newCost);
-});
+function renderItems() {
+  const list = document.getElementById("itemList");
+  list.innerHTML = "";
+  items.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<strong>${item.name}</strong> (${item.qty} x <span class="rupiah">${formatRupiah(item.price)}</span>)`;
 
-document.getElementById('calculate').addEventListener('click', function() {
-    let people = document.querySelectorAll('.person');
-    let total = 0;
-
-    people.forEach(person => {
-        let items = person.querySelectorAll('.item');
-        let personTotal = 0;
-        
-        items.forEach(item => {
-            let price = parseFloat(item.querySelector('.item-price').value) || 0;
-            let qty = parseInt(item.querySelector('.item-qty').value) || 1;
-            personTotal += price * qty;
-        });
-        total += personTotal;
+    const btns = document.createElement("div");
+    btns.className = "pill-container";
+    people.forEach((p) => {
+      const btn = document.createElement("button");
+      btn.textContent = p;
+      btn.className = item.sharedBy.includes(p) ? "selected" : "";
+      btn.onclick = () => toggleShare(index, p);
+      btns.appendChild(btn);
     });
 
-    document.querySelectorAll('.cost-amount').forEach(cost => {
-        total += parseFloat(cost.value) || 0;
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "✏️ Edit";
+    editBtn.onclick = () => editItem(index);
+    editBtn.style.marginTop = "6px";
+    editBtn.style.background = "#ffa726";
+
+    li.appendChild(btns);
+    li.appendChild(editBtn);
+    list.appendChild(li);
+  });
+}
+
+function renderPeople() {
+  const div = document.getElementById("personList");
+  div.innerHTML = "";
+  people.forEach((p) => {
+    const span = document.createElement("span");
+    span.textContent = p;
+    span.className = "pill";
+    div.appendChild(span);
+  });
+}
+
+function showSummary() {
+  const summary = {};
+  people.forEach((p) => (summary[p] = 0));
+
+  let subtotal = 0;
+  items.forEach((item) => {
+    const total = item.qty * item.price;
+    subtotal += total;
+    const share = item.sharedBy.length > 0 ? total / item.sharedBy.length : 0;
+    item.sharedBy.forEach((p) => {
+      summary[p] += share;
     });
-    
-    let globalDiscount = parseFloat(document.getElementById('global-discount').value) || 0;
-    let discountType = document.getElementById('discount-type').value;
-    
-    if (discountType === "percentage") {
-        total = total - (total * (globalDiscount / 100));
+  });
+
+  const extras = ["delivery", "service", "packing", "tax", "discount"];
+  let extraTotal = 0;
+  extras.forEach((key) => {
+    const val = document.getElementById(key).value;
+    let amount = 0;
+    if (val.includes("%")) {
+      amount = (subtotal * parseFloat(val) / 100);
     } else {
-        total = total - globalDiscount;
+      amount = parseFloat(val) || 0;
     }
+    if (key === "discount") extraTotal -= amount;
+    else extraTotal += amount;
+  });
 
-    document.getElementById('total-amount').textContent = total.toFixed(2);
-});
+  const finalTotal = subtotal + extraTotal;
+  const ratio = finalTotal / subtotal;
+
+  Object.keys(summary).forEach((p) => {
+    summary[p] *= ratio;
+  });
+
+  const ul = document.getElementById("summaryList");
+  ul.innerHTML = "";
+  Object.entries(summary).forEach(([name, total]) => {
+    const li = document.createElement("li");
+    li.innerHTML = `${name}: <span class="rupiah">${formatRupiah(Math.round(total))}</span>`;
+    ul.appendChild(li);
+  });
+}
+
+function formatRupiah(number) {
+  return number.toLocaleString("id-ID");
+}

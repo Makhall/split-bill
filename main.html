@@ -4,38 +4,59 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Split Bill</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Split Bill</h1>
-
+    <h1><i class="fas fa-receipt"></i> Split Bill</h1>
     <section>
-      <h2>Tambah Barang</h2>
+      <h2><i class="fas fa-box"></i> Tambah Barang</h2>
       <div class="input-row">
         <input type="text" id="itemName" placeholder="Nama Barang">
         <input type="number" id="itemQty" placeholder="Qty" value="1" min="1">
         <input type="number" id="itemPrice" placeholder="Harga per item">
-        <button class="icon-button" onclick="addItem()">
-            <span class="circle">+</span>
+        <button class="icon-button" onclick="addItem()" title="Tambahkan item ke daftar">
+            <span class="circle"><i class="fas fa-plus"></i>+</span>
+            Tambah barang
         </button>
       </div>
       <ul id="itemList"></ul>
+
+      <div id="editModal" class="modal">
+        <div class="modal-content">
+          <h3>Edit Item</h3>
+          <label>Nama Barang:
+            <input type="text" id="modalName" />
+          </label>
+          <label>Qty:
+            <input type="number" id="modalQty" min="1" />
+          </label>
+          <label>Harga:
+            <input type="number" id="modalPrice" min="0" />
+          </label>
+          <div class="modal-buttons">
+            <button onclick="confirmEdit()">Simpan</button>
+            <button onclick="closeModal()">Batal</button>
+          </div>
+        </div>
+      </div>
+
     </section>
 
     <section>
-      <h2>Tambah Orang</h2>
+      <h2><i class="fas fa-user-plus"></i> Tambah Orang</h2>
       <div class="input-row">
         <input type="text" id="personName" placeholder="Nama Orang">
-        <button class="icon-button" onclick="addPerson()">
-            <span class="circle">+</span>
+        <button class="icon-button" onclick="addPerson()" title="Tambahkan orang ke daftar">
+            <span class="circle"><i class="fas fa-user"></i>+</span>
+            Tambah orang
         </button>
       </div>
       <div id="personList" class="pill-container"></div>
     </section>
 
     <section>
-      <h2>Biaya Tambahan</h2>
+      <h2><i class="fas fa-money-bill-wave"></i> Biaya Tambahan</h2>
         <div class="input-row">
           <label>Pengiriman:</label>
           <input type="text" id="delivery" />
@@ -59,12 +80,20 @@
     </section>
 
     <section>
-      <h2>Summary</h2>
-      <button class="icon-button" onclick="showSummary()">
-        <span class="circle">📈</span>
+      <h2><i class="fas fa-list"></i> Summary</h2>
+      <button class="icon-button" onclick="showSummary()" id="calculateBtn" title="Hitung pembagian tagihan">
+        <span class="circle"><i class="fas fa-calculator"></i>+</span>
         Hitung
     </button>
+    <span id="loadingText" style="display:none; margin-left: 10px; color: #666;">⏳ Menghitung...</span>
       <ul id="summaryList"></ul>
+    </section>
+
+    <section>
+        <button class="icon-button" onclick="resetAll()" title="Reset semua input dan hasil">
+          <span class="circle"><i class="fas fa-rotate-left"></i>-</span>
+          Reset Semua
+        </button>
     </section>
   </div>
 

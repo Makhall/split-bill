@@ -1,32 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Split Bill Calculator</title>
-    <!-- <link rel="stylesheet" href="styles.css"> -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Split Bill</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="container">
-        <h2>Split Bill Calculator</h2>
-        <div id="people"></div>
-        <div class="button-group">
-            <button id="add-person" class="text-link">+ Add Person</button>
-            <button id="reset-all" class="text-link">Reset</button>
+  <div class="container">
+    <h1>Split Bill</h1>
+
+    <section>
+      <h2>Tambah Barang</h2>
+      <div class="input-row">
+        <input type="text" id="itemName" placeholder="Nama Barang">
+        <input type="number" id="itemQty" placeholder="Qty" value="1" min="1">
+        <input type="number" id="itemPrice" placeholder="Harga per item">
+        <button class="icon-button" onclick="addItem()">
+            <span class="circle">+</span>
+        </button>
+      </div>
+      <ul id="itemList"></ul>
+    </section>
+
+    <section>
+      <h2>Tambah Orang</h2>
+      <div class="input-row">
+        <input type="text" id="personName" placeholder="Nama Orang">
+        <button class="icon-button" onclick="addPerson()">
+            <span class="circle">+</span>
+        </button>
+      </div>
+      <div id="personList" class="pill-container"></div>
+    </section>
+
+    <section>
+      <h2>Biaya Tambahan</h2>
+        <div class="input-row">
+          <label>Pengiriman:</label>
+          <input type="text" id="delivery" />
         </div>
-        <h3>Other Costs</h3>
-        <div id="other-costs"></div>
-        <button id="add-cost" class="text-link">+ Add Cost</button>
-        <h3>Global Discount</h3>
-        <input type="number" id="global-discount" placeholder="Enter discount" value="0">
-        <select id="discount-type">
-            <option value="percentage">Percentage (%)</option>
-            <option value="fixed">Fixed Amount</option>
-        </select>
-        <button id="calculate">Calculate Total</button>
-        <h3>Total Amount: <span id="total-amount">0</span></h3>
-    </div>
-    
-    <script src="script.js"></script>
+        <div class="input-row">
+          <label>Layanan:</label>
+          <input type="text" id="service" />
+        </div>
+        <div class="input-row">
+          <label>Packing:</label>
+          <input type="text" id="packing" />
+        </div>
+        <div class="input-row">
+          <label>Pajak:</label>
+          <input type="text" id="tax" />
+        </div>
+        <div class="input-row">
+          <label>Diskon:</label>
+          <input type="text" id="discount" />
+        </div>      
+    </section>
+
+    <section>
+      <h2>Summary</h2>
+      <button class="icon-button" onclick="showSummary()">
+        <span class="circle">📈</span>
+        Hitung
+    </button>
+      <ul id="summaryList"></ul>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

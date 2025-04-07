@@ -26,7 +26,7 @@ A modern and interactive web app to split bills among friends fairly and easily 
 
 ## 🌐 Hosting di Netlify
 
-Website ini telah di-hosting di Netlify. Kamu bisa melihatnya di sini:  
+This website is hosted on Netlify. You can see it here:  
 🔗 **[Demo](https://split-bill-82d338.netlify.app)**
 
 

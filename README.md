@@ -24,7 +24,7 @@ A modern and interactive web app to split bills among friends fairly and easily 
 - CSS3 (modern design + animation)
 - Vanilla JavaScript (no frameworks)
 
-## 🌐 Hosting di Netlify
+## 🌐 Hosting on Netlify
 
 This website is hosted on Netlify. You can see it here:  
 🔗 **[Demo](https://split-bill-82d338.netlify.app)**

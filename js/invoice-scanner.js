@@ -98,6 +98,8 @@ function processImageOCR(dataUrl) {
   document.getElementById("loadingOverlay").style.display = "flex"; // Tampilkan overlay
 
   Tesseract.recognize(dataUrl, "eng", {
+    tessedit_char_whitelist:
+      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZRp.xX",
     logger: (m) => console.log(m),
   })
     .then(({ data: { text } }) => {

@@ -82,13 +82,27 @@ function renderItems() {
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <span><strong>${item.name}</strong> (${
       item.qty
-    } x <span class="rupiah">${formatRupiah(item.price)}</span>)</span>
+    } item - Total: <span class="rupiah">${formatRupiah(
+      item.price
+    )}</span>)</span>
       <div>
         <button onclick="removeItem(${index})" class="delete-button">🗑️</button>
         <button onclick="editItem(${index})" class="edit-button">✏️</button>
       </div>
     </div>
     `;
+
+    if (item.sharedBy.length > 0) {
+      const sharedText = document.createElement("div");
+      sharedText.style.fontSize = "0.85em";
+      sharedText.style.marginTop = "4px";
+      sharedText.innerText = `Dibagi ${
+        item.sharedBy.length
+      } orang → ${formatRupiah(
+        Math.round(item.price / item.sharedBy.length)
+      )} / orang`;
+      li.appendChild(sharedText);
+    }
 
     // Tambahkan tombol share per orang
     const btns = document.createElement("div");
@@ -128,10 +142,11 @@ function showSummary() {
 
       let subtotal = 0;
       items.forEach((item) => {
-        const total = item.qty * item.price;
+        const total = item.price; // Sudah total dari OCR
         subtotal += total;
-        const share =
-          item.sharedBy.length > 0 ? total / item.sharedBy.length : 0;
+        const sharedCount = item.sharedBy.length;
+        const share = sharedCount > 0 ? Math.round(total / sharedCount) : 0;
+
         item.sharedBy.forEach((p) => {
           summary[p] += share;
         });

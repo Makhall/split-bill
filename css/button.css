@@ -61,29 +61,27 @@ button.icon-button:hover .circle {
   border-color: white;
 }
 
-.edit-button {
+.edit-button,
+.delete-button {
   background: none;
   border: none;
-  padding: 2px;
-  margin-left: 8px;
-  font-size: 14px;
-  color: #666;
+  color: #888;
+  font-size: 16px;
+  padding: 4px;
+  margin-left: 4px;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .edit-button:hover,
-.edit-button:focus {
-  background: none;
-  outline: none;
-  box-shadow: none;
+.delete-button:hover {
+  color: #333;
 }
 
 .delete-button {
-  background: red;
-  color: white;
-  border: none;
-  margin-left: 6px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  cursor: pointer;
+  color: #e53935;
+}
+
+.delete-button:hover {
+  color: #b71c1c;
 }

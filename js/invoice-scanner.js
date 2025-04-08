@@ -1,50 +1,51 @@
 // Asumsikan items sudah dideklarasikan di script.js
 
 const itemPatterns = [
-  // 1. GoFood satu baris: 1 Express Bowl Ayam Asam Manis Rp26.000
-  /(\d+)\s+(.+?)\s+Rp[.]?[\s]?([\d,.]+)/i,
+  // 1. ⚡ Paling spesifik: ShopeeFood satu baris: 2 [fs] paket nasi ayam geprek Rp61184
+  /^\s*(\d+)\s+x?\s*(?:\[fs\]\s*)?(.+?)\s+Rp[\s]?([\d.,]+)/i,
 
-  // 2. Format dua baris: Line 1 = nama, Line 2 = qty x RpHarga
+  // 2. 2 x Nasi Goreng Rp 20000
+  /(\d+)\s*x\s+(.+?)\s+Rp[\s]?([\d.,]+)/i,
+
+  // 3. 2 x Ayam Geprek 15000 (tanpa Rp)
+  /(\d+)\s*x\s+(.+?)\s+([\d.,]+)/i,
+
+  // 4. GoFood satu baris: 1 Express Bowl Ayam Asam Manis Rp26.000
+  /(\d+)\s+(.+?)\s+Rp[.]?[\s]?([\d.,]+)/i,
+
+  // 5. Format dua baris: Line 1 = nama, Line 2 = qty x RpHarga
   {
     multiLine: true,
     pattern: (lines, index) => {
       const line1 = lines[index];
       const line2 = lines[index + 1];
-      const qtyPriceMatch = line2?.match(/(\d+)\s*x\s*Rp[\s]?([\d,.]+)/i);
+      const qtyPriceMatch = line2?.match(/(\d+)\s*x\s*Rp[\s]?([\d.,]+)/i);
       if (line1 && qtyPriceMatch) {
         return {
           match: true,
           item: line1.trim(),
           qty: parseInt(qtyPriceMatch[1]),
-          price: parseInt(
-            qtyPriceMatch[2].replace(/\./g, "").replace(",", ".")
-          ),
+          price: parseInt(qtyPriceMatch[2].replace(/\./g, "").replace(",", "")),
         };
       }
       return { match: false };
     },
   },
 
-  // 3. 2 x Ayam Geprek 15000
-  /(\d+)\s*x\s+(.+?)\s+([\d,.]+)/i,
-
-  // 4. 2 x Nasi Goreng Rp 20000
-  /(\d+)\s*x\s+(.+?)\s+Rp[\s]?([\d,.]+)/i,
-
-  // 5. ShopeeFood 3-baris
+  // 6. ShopeeFood 3-baris
   {
     multiLine: true,
     pattern: (lines, index) => {
       const line1 = lines[index];
       const line2 = lines[index + 2];
       const qtyMatch = line1.match(/^(\d+)\s+(.+)/);
-      const priceMatch = line2?.match(/@Rp[\s]?([\d,.]+)[\s]?Rp[\s]?([\d,.]+)/);
+      const priceMatch = line2?.match(/@Rp[\s]?([\d.,]+)[\s]?Rp[\s]?([\d.,]+)/);
       if (qtyMatch && priceMatch) {
         return {
           match: true,
           item: qtyMatch[2].trim(),
           qty: parseInt(qtyMatch[1]),
-          price: parseInt(priceMatch[2].replace(/\./g, "").replace(",", ".")),
+          price: parseInt(priceMatch[2].replace(/\./g, "").replace(",", "")),
         };
       }
       return { match: false };
@@ -159,7 +160,7 @@ function parseInvoiceLines(lines) {
             price: result.price,
             sharedBy: [],
           });
-          i += 2; // skip dua baris tambahan setelah match 3-baris
+          i += 2; // kalau kamu yakin item ShopeeFood selalu 3 baris
           matched = true;
           break;
         }

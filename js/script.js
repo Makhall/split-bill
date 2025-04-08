@@ -35,41 +35,58 @@ function toggleShare(itemIndex, person) {
 }
 
 function editItem(index) {
-    currentEditIndex = index;
-    const item = items[index];
+  currentEditIndex = index;
+  const item = items[index];
 
-    document.getElementById("modalName").value = item.name;
-    document.getElementById("modalQty").value = item.qty;
-    document.getElementById("modalPrice").value = item.price;
-    document.getElementById("editModal").style.display = "flex";
-}  
+  document.getElementById("modalName").value = item.name;
+  document.getElementById("modalQty").value = item.qty;
+  document.getElementById("modalPrice").value = item.price;
+  document.getElementById("editModal").style.display = "flex";
+}
 
 function closeModal() {
-    document.getElementById("editModal").style.display = "none";
+  document.getElementById("editModal").style.display = "none";
 }
 
 function confirmEdit() {
-    const name = document.getElementById("modalName").value.trim();
-    const qty = parseInt(document.getElementById("modalQty").value);
-    const price = parseFloat(document.getElementById("modalPrice").value);
+  const name = document.getElementById("modalName").value.trim();
+  const qty = parseInt(document.getElementById("modalQty").value);
+  const price = parseFloat(document.getElementById("modalPrice").value);
 
-    if (name && !isNaN(qty) && !isNaN(price)) {
-      items[currentEditIndex].name = name;
-      items[currentEditIndex].qty = qty;
-      items[currentEditIndex].price = price;
-      
-      renderItems();
-      closeModal();
-    }
- }
+  if (name && !isNaN(qty) && !isNaN(price)) {
+    items[currentEditIndex].name = name;
+    items[currentEditIndex].qty = qty;
+    items[currentEditIndex].price = price;
+
+    renderItems();
+    closeModal();
+  }
+}
+
+function removeItem(index) {
+  if (confirm("Yakin ingin menghapus item ini?")) {
+    items.splice(index, 1);
+    renderItems();
+  }
+}
 
 function renderItems() {
   const list = document.getElementById("itemList");
-  list.innerHTML = "";
+  list.innerHTML = ""; // Bersihkan isi list
+
   items.forEach((item, index) => {
     const li = document.createElement("li");
-    li.innerHTML = `<strong>${item.name}</strong> (${item.qty} x <span class="rupiah">${formatRupiah(item.price)}</span>)`;
+    li.className = "item";
 
+    li.innerHTML = `
+      <span><strong>${item.name}</strong> (${
+      item.qty
+    } x <span class="rupiah">${formatRupiah(item.price)}</span>)</span>
+      <button onclick="removeItem(${index})" class="delete-button">🗑️</button>
+      <button onclick="editItem(${index})" class="edit-button">✏️</button>
+    `;
+
+    // Tambahkan tombol share per orang
     const btns = document.createElement("div");
     btns.className = "pill-container";
     people.forEach((p) => {
@@ -80,13 +97,7 @@ function renderItems() {
       btns.appendChild(btn);
     });
 
-    const editBtn = document.createElement("button");
-    editBtn.className = "edit-button";
-    editBtn.innerHTML = "✏️";
-    editBtn.onclick = () => editItem(index);
-
     li.appendChild(btns);
-    li.appendChild(editBtn);
     list.appendChild(li);
   });
 }
@@ -103,84 +114,86 @@ function renderPeople() {
 }
 
 function showSummary() {
-    const loadingText = document.getElementById("loadingText");
-    loadingText.style.display = "inline";
-  
-    setTimeout(() => {
-      try {
-        const summary = {};
-        people.forEach((p) => (summary[p] = 0));
-  
-        let subtotal = 0;
-        items.forEach((item) => {
-          const total = item.qty * item.price;
-          subtotal += total;
-          const share = item.sharedBy.length > 0 ? total / item.sharedBy.length : 0;
-          item.sharedBy.forEach((p) => {
-            summary[p] += share;
-          });
+  const loadingText = document.getElementById("loadingText");
+  loadingText.style.display = "inline";
+
+  setTimeout(() => {
+    try {
+      const summary = {};
+      people.forEach((p) => (summary[p] = 0));
+
+      let subtotal = 0;
+      items.forEach((item) => {
+        const total = item.qty * item.price;
+        subtotal += total;
+        const share =
+          item.sharedBy.length > 0 ? total / item.sharedBy.length : 0;
+        item.sharedBy.forEach((p) => {
+          summary[p] += share;
         });
-  
-        const extras = ["delivery", "service", "packing", "tax", "discount"];
-        let extraTotal = 0;
-        extras.forEach((key) => {
-          const val = document.getElementById(key).value;
-          let amount = 0;
-          if (val.includes("%")) {
-            amount = (subtotal * parseFloat(val) / 100);
-          } else {
-            amount = parseFloat(val) || 0;
-          }
-          if (key === "discount") extraTotal -= amount;
-          else extraTotal += amount;
-        });
-  
-        const finalTotal = subtotal + extraTotal;
-        const ratio = finalTotal / subtotal;
-  
-        Object.keys(summary).forEach((p) => {
-          summary[p] *= ratio;
-        });
-  
-        const ul = document.getElementById("summaryList");
-        ul.innerHTML = "";
-        Object.entries(summary).forEach(([name, total]) => {
-          const li = document.createElement("li");
-          li.innerHTML = `${name}: <span class="rupiah">${formatRupiah(Math.round(total))}</span>`;
-          ul.appendChild(li);
-        });
-  
-      } catch (e) {
-        console.error("Terjadi kesalahan:", e);
-      } finally {
-        loadingText.style.display = "none";
-      }
-    }, 100); // Delay agar animasi loading terlihat
-  }  
+      });
+
+      const extras = ["delivery", "service", "packing", "tax", "discount"];
+      let extraTotal = 0;
+      extras.forEach((key) => {
+        const val = document.getElementById(key).value;
+        let amount = 0;
+        if (val.includes("%")) {
+          amount = (subtotal * parseFloat(val)) / 100;
+        } else {
+          amount = parseFloat(val) || 0;
+        }
+        if (key === "discount") extraTotal -= amount;
+        else extraTotal += amount;
+      });
+
+      const finalTotal = subtotal + extraTotal;
+      const ratio = finalTotal / subtotal;
+
+      Object.keys(summary).forEach((p) => {
+        summary[p] *= ratio;
+      });
+
+      const ul = document.getElementById("summaryList");
+      ul.innerHTML = "";
+      Object.entries(summary).forEach(([name, total]) => {
+        const li = document.createElement("li");
+        li.innerHTML = `${name}: <span class="rupiah">${formatRupiah(
+          Math.round(total)
+        )}</span>`;
+        ul.appendChild(li);
+      });
+    } catch (e) {
+      console.error("Terjadi kesalahan:", e);
+    } finally {
+      loadingText.style.display = "none";
+    }
+  }, 100); // Delay agar animasi loading terlihat
+}
 
 function formatRupiah(number) {
   return number.toLocaleString("id-ID");
 }
 
 function resetAll() {
-    // Reset input
-    document.getElementById("itemName").value = "";
-    document.getElementById("itemQty").value = "1";
-    document.getElementById("itemPrice").value = "";
-    document.getElementById("personName").value = "";
-    document.getElementById("delivery").value = "";
-    document.getElementById("service").value = "";
-    document.getElementById("packing").value = "";
-    document.getElementById("tax").value = "";
-    document.getElementById("discount").value = "";
-  
-    // Reset list
-    document.getElementById("itemList").innerHTML = "";
-    document.getElementById("personList").innerHTML = "";
-    document.getElementById("summaryList").innerHTML = "";
-  
-    // Reset variabel global jika ada
-    items = [];
-    people = [];
-    itemIdCounter = 0;
-  }
+  // Reset input
+  document.getElementById("itemName").value = "";
+  document.getElementById("itemQty").value = "1";
+  document.getElementById("itemPrice").value = "";
+  document.getElementById("personName").value = "";
+  document.getElementById("delivery").value = "";
+  document.getElementById("service").value = "";
+  document.getElementById("packing").value = "";
+  document.getElementById("tax").value = "";
+  document.getElementById("discount").value = "";
+
+  // Reset list
+  document.getElementById("itemList").innerHTML = "";
+  document.getElementById("personList").innerHTML = "";
+  document.getElementById("summaryList").innerHTML = "";
+
+  // Reset variabel global jika ada
+  items = [];
+  people = [];
+  itemIdCounter = 0;
+}

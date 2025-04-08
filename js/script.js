@@ -79,11 +79,15 @@ function renderItems() {
     li.className = "item";
 
     li.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center;">
       <span><strong>${item.name}</strong> (${
       item.qty
     } x <span class="rupiah">${formatRupiah(item.price)}</span>)</span>
-      <button onclick="removeItem(${index})" class="delete-button">🗑️</button>
-      <button onclick="editItem(${index})" class="edit-button">✏️</button>
+      <div>
+        <button onclick="removeItem(${index})" class="delete-button">🗑️</button>
+        <button onclick="editItem(${index})" class="edit-button">✏️</button>
+      </div>
+    </div>
     `;
 
     // Tambahkan tombol share per orang

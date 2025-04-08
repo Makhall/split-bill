@@ -1,0 +1,19 @@
+.fade-in {
+  animation: fadeInUp 0.6s ease-out both;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#loadingText {
+  font-style: italic;
+  animation: fadeInUp 0.5s ease forwards;
+}

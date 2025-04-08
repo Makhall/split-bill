@@ -1,0 +1,32 @@
+.rupiah {
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+.rupiah::before {
+  content: "Rp. ";
+  margin-right: 2px;
+}
+
+#summaryList li {
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+#summaryList li .rupiah {
+  background: #e3f2fd;
+  color: #1b5e20;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.95em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  animation: fadeInUp 0.3s ease forwards;
+}
+
+#summaryList li:hover {
+  transform: translateY(-2px);
+  transition: 0.2s ease;
+}

@@ -23,20 +23,25 @@ dropZone.addEventListener("drop", (e) => {
   const file = e.dataTransfer.files[0];
   if (file) {
     invoiceInput.files = e.dataTransfer.files;
-    handleInvoice(); // Panggil fungsi utama scan
+    showFileName(file);
+    handleInvoice();
   }
 });
 
 // handle manual file input
 invoiceInput.addEventListener("change", () => {
   if (invoiceInput.files.length > 0) {
+    const file = invoiceInput.files[0];
+    showFileName(file);
     handleInvoice();
   }
 });
 
 function showFileName(file) {
-  const preview = document.getElementById("filePreview");
-  preview.innerHTML = `<p><strong>${file.name}</strong> siap diproses</p>`;
+  const fileNameElement = document.getElementById("uploadedFileName");
+  if (fileNameElement) {
+    fileNameElement.textContent = `📄 ${file.name}`;
+  }
 }
 
 // Asumsikan items sudah dideklarasikan di script.js

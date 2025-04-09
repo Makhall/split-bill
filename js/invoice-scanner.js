@@ -1,3 +1,44 @@
+const dropZone = document.getElementById("dropZone");
+const invoiceInput = document.getElementById("invoiceInput");
+const chooseFile = document.getElementById("chooseFile");
+
+dropZone.addEventListener("click", () => invoiceInput.click());
+
+chooseFile.addEventListener("click", (e) => {
+  e.stopPropagation();
+  invoiceInput.click();
+});
+
+// drag events
+dropZone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  dropZone.classList.add("dragover");
+});
+dropZone.addEventListener("dragleave", () => {
+  dropZone.classList.remove("dragover");
+});
+dropZone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropZone.classList.remove("dragover");
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    invoiceInput.files = e.dataTransfer.files;
+    handleInvoice(); // Panggil fungsi utama scan
+  }
+});
+
+// handle manual file input
+invoiceInput.addEventListener("change", () => {
+  if (invoiceInput.files.length > 0) {
+    handleInvoice();
+  }
+});
+
+function showFileName(file) {
+  const preview = document.getElementById("filePreview");
+  preview.innerHTML = `<p><strong>${file.name}</strong> siap diproses</p>`;
+}
+
 // Asumsikan items sudah dideklarasikan di script.js
 
 const itemPatterns = [
@@ -160,7 +201,7 @@ function parseInvoiceLines(lines) {
             price: result.price,
             sharedBy: [],
           });
-          i += 2; // kalau kamu yakin item ShopeeFood selalu 3 baris
+          i += pattern === specific3BarisPattern ? 2 : 1;
           matched = true;
           break;
         }

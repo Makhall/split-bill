@@ -18,16 +18,63 @@
     <link rel="stylesheet" href="css/summary.css" />
     <link rel="stylesheet" href="css/transition.css" />
     <link rel="stylesheet" href="css/typography.css" />
+    <link rel="stylesheet" href="css/upload-files.css" />
   </head>
   <body>
     <div class="container">
       <h1><i class="fas fa-receipt"></i>Split Bill</h1>
       <section>
-        <input type="file" id="invoiceInput" accept="image/*,application/pdf" />
-        <button onclick="handleInvoice()">Scan Faktur</button>
-        <div id="loadingOverlay" style="display: none">
-          <div class="spinner"></div>
-          <p>Scanning...</p>
+        <div id="dropZone" class="drop-zone">
+          <!-- Input file tersembunyi -->
+          <input
+            type="file"
+            id="invoiceInput"
+            accept="image/*,application/pdf"
+            hidden
+          />
+
+          <!-- Tampilan area upload file -->
+          <div id="filePreview" class="file-preview">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="60"
+              height="60"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#2196f3"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="icon icon-tabler icon-tabler-file-upload"
+              style="margin-bottom: 12px"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+              <path
+                d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"
+              />
+              <path d="M12 11v6" />
+              <path d="M9.5 13.5l2.5 -2.5l2.5 2.5" />
+            </svg>
+            <p>
+              <strong>Drag and Drop file here</strong> or
+              <span
+                id="chooseFile"
+                style="
+                  color: #007bff;
+                  cursor: pointer;
+                  text-decoration: underline;
+                "
+                >Choose file</span
+              >
+            </p>
+
+            <!-- Uploading overlay -->
+            <div id="loadingOverlay" style="display: none">
+              <div class="spinner"></div>
+              <p>Scanning...</p>
+            </div>
+          </div>
         </div>
 
         <h2><i class="fas fa-box"></i> Tambah Item</h2>

@@ -1,0 +1,25 @@
+.drop-zone {
+  border: 2px dashed #ccc;
+  padding: 40px;
+  text-align: center;
+  border-radius: 10px;
+  background: #f9f9f9;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.drop-zone.dragover {
+  background: #e6f7ff;
+  border-color: #00aaff;
+}
+
+.file-preview img {
+  width: 40px;
+  margin-bottom: 10px;
+}
+
+.file-preview span {
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+}

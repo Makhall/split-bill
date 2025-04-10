@@ -81,6 +81,22 @@
           </div>
         </div>
 
+      <section>
+        <h2><i class="fas fa-user-plus"></i> Tambah Orang</h2>
+        <div class="input-row">
+          <input type="text" id="personName" placeholder="Nama orang" />
+          <button
+            class="icon-button"
+            onclick="addPerson()"
+            title="Tambahkan orang ke daftar"
+          >
+            <span class="circle"><i class="fas fa-user"></i>+</span>
+            Tambah orang
+          </button>
+        </div>
+        <div id="personList" class="pill-container"></div>
+      </section>
+        
         <h2><i class="fas fa-box"></i> Tambah Item</h2>
         <div class="input-row">
           <input type="text" id="itemName" placeholder="Nama item" />
@@ -124,22 +140,6 @@
             </div>
           </div>
         </div>
-      </section>
-
-      <section>
-        <h2><i class="fas fa-user-plus"></i> Tambah Orang</h2>
-        <div class="input-row">
-          <input type="text" id="personName" placeholder="Nama orang" />
-          <button
-            class="icon-button"
-            onclick="addPerson()"
-            title="Tambahkan orang ke daftar"
-          >
-            <span class="circle"><i class="fas fa-user"></i>+</span>
-            Tambah orang
-          </button>
-        </div>
-        <div id="personList" class="pill-container"></div>
       </section>
 
       <section>

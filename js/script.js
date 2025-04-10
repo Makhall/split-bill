@@ -6,7 +6,7 @@ let currentEditIndex = null;
 function addItem() {
   const name = document.getElementById("itemName").value;
   const qty = parseInt(document.getElementById("itemQty").value);
-  const price = parseFloat(document.getElementById("itemPrice").value);
+  const price = parseFloat(document.getElementById("itemPrice").value.replace(/\./g, ""));
 
   if (!name || !qty || !price) return;
 
@@ -160,7 +160,7 @@ function showSummary() {
         if (val.includes("%")) {
           amount = (subtotal * parseFloat(val)) / 100;
         } else {
-          amount = parseFloat(val) || 0;
+          amount = parseFloat(val.replace(/\./g, "").replace(",", ".")) || 0;
         }
         if (key === "discount") extraTotal -= amount;
         else extraTotal += amount;
@@ -190,6 +190,27 @@ function showSummary() {
   }, 100); // Delay agar animasi loading terlihat
 }
 
+function formatInputToRupiah(el) {
+  el.addEventListener("input", function (e) {
+    let value = this.value.replace(/\D/g, "");
+    if (!value) {
+      this.value = "";
+      return;
+    }
+    this.value = parseInt(value, 10).toLocaleString("id-ID");
+  });
+}
+
+function setupRupiahInputs() {
+  const fields = ["itemPrice", "delivery", "service", "packing", "tax", "discount"];
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      formatInputToRupiah(el);
+    }
+  });
+}
+
 function formatRupiah(number) {
   return number.toLocaleString("id-ID");
 }
@@ -216,3 +237,5 @@ function resetAll() {
   people = [];
   itemIdCounter = 0;
 }
+
+document.addEventListener("DOMContentLoaded", setupRupiahInputs);
